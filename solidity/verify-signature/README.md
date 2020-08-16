@@ -152,7 +152,7 @@ Result of `truffle test`:
     ✓ Message should be sign properly with 0x3624dDc1940f71f8a2b33df0f85fF19f5114310d
 ```
 
-The result and whole code could be found here: [Improving Ethereum signature verification](https://github.com/chiro-hiro/examples/solidity/verify-signature)
+The result and whole code could be found here: [Improving Ethereum signature verification](https://github.com/chiro-hiro/examples/tree/master/solidity/verify-signature)
 
 ## Conclusion
 
