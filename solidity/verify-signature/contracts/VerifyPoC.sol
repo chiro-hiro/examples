@@ -18,7 +18,7 @@ contract VerifyPoC {
             r := mload(add(signature, 0x20))
             s := mload(add(signature, 0x40))
             v := byte(0, mload(add(signature, 0x60)))
-            // Invalid v value, for Ethereum it's only possible to be 0, 1, 27, 28
+            // Invalid v value, for Ethereum it's only possible to be 27, 28 and 0, 1 in legacy code
             if lt(v, 27) {
                 v := add(v, 27)
             }
@@ -44,38 +44,6 @@ contract VerifyPoC {
 
         return ecrecover(hashes, v, r, s);
     }
-
-    function verify(bytes memory message, bytes memory signature) public pure returns (address) {
-        bytes32 r;
-        bytes32 s;
-        uint8 v;
-        assembly {
-            // Singature need to be 65 in length
-            // if (signature.length !== 65) revert();
-            if iszero(eq(mload(signature), 65)) {
-                revert(0, 0)
-            }
-            // r = signature[:32]
-            // s = signature[32:64]
-            // v = signature[64]
-            r := mload(add(signature, 0x20))
-            s := mload(add(signature, 0x40))
-            v := byte(0, mload(add(signature, 0x60)))
-            // For Ethereum it's only possible to be 27, 28 and 0,1 in legacy code
-            if lt(v, 27) {
-                v := add(v, 27)
-            }
-            if iszero(or(eq(v, 27), eq(v, 28))) {
-                revert(0, 0)
-            }
-        }
-
-        // Get hashes of message with Ethereum proof prefix
-        bytes32 hashes = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n", uintToStr(message.length), message));
-
-        return ecrecover(hashes, v, r, s);
-    }
-
 
     function uintToStr(uint256 value) public pure returns (bytes memory result) {
         assembly {
