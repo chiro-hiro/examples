@@ -1,0 +1,16 @@
+version: "3.3"
+services:
+  geth:
+    build: .
+    container_name: light-node
+    image: geth-light
+    environment:
+      - GETH_TAG=v1.10.2
+      - GETH_NETWORK=mainnet
+    ports:
+      - 8546:8546
+      - 30303:30303
+    volumes:
+      - geth_data:/root/.ethereum
+volumes:
+  geth_data: {}
