@@ -43,9 +43,7 @@ func (c *Computa) Open() {
 func (c *Computa) CalcuateJobs() []Job {
 	f, _ := c.fHandle.Stat()
 	if c.Chunk <= 1 {
-		js := make([]Job, 1)
-		js[0] = Job{Start: 0, End: f.Size()}
-		return js
+		return []Job{Job{Start: 0, End: f.Size()}}
 	}
 	chunkSize := f.Size() / int64(c.Chunk)
 	js := make([]Job, c.Chunk)
