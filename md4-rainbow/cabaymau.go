@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"flag"
+	"io"
 	"log"
 	"os"
 	"sync"
@@ -75,9 +76,13 @@ func (c *Computa) CalculateMD4(j Job, cH chan string) {
 	}
 	h := md4.New()
 	r := bufio.NewReader(c.fHandle)
+	c.fHandle.Seek(j.Start, io.SeekStart)
 	for k := j.Start; k < j.End; {
 		h.Reset()
-		b, _, _ := r.ReadLine()
+		b, _, e := r.ReadLine()
+		if e != nil {
+			break
+		}
 		t := bytes.Trim(b, "\n\r")
 		h.Write(t)
 		cH <- hex.EncodeToString(h.Sum(nil)) + "," + string(t) + "\n"
