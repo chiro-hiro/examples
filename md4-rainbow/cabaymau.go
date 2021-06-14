@@ -18,6 +18,8 @@ type Job struct {
 	End   int64
 }
 
+type Jobs []Job
+
 type Computa struct {
 	Salt     []byte
 	FileName string
@@ -40,13 +42,13 @@ func (c *Computa) Open() {
 
 }
 
-func (c *Computa) CalcuateJobs() []Job {
+func (c *Computa) CalcuateJobs() Jobs {
 	f, _ := c.fHandle.Stat()
 	if c.Chunk <= 1 {
-		return []Job{Job{Start: 0, End: f.Size()}}
+		return Jobs{Job{Start: 0, End: f.Size()}}
 	}
 	chunkSize := f.Size() / int64(c.Chunk)
-	js := make([]Job, c.Chunk)
+	js := make(Jobs, c.Chunk)
 	for i, k := int64(0), 0; k < c.Chunk; k += 1 {
 		s := int64(i + chunkSize)
 		if s >= f.Size() {
@@ -95,8 +97,8 @@ func (c *Computa) Close() {
 }
 
 func main() {
-	sFilename := flag.String("file", "", "Input file name")
-	sOut := flag.String("out", "./a.out", "Onput file name")
+	sFilename := flag.String("file", "", "Input filename")
+	sOut := flag.String("out", "./a.out", "Onput filename")
 	sSalt := flag.String("salt", "", "Extra salt in hexstring")
 	nChunk := flag.Int("chunk", 2, "Number of chunks, it used to your CPU cores")
 	flag.Parse()
@@ -146,7 +148,7 @@ func main() {
 			defer wg.Done()
 			k.CalculateMD4(jobs[i], result)
 		}(i, &wg)
-		defer k.Clone()
+		defer k.Close()
 	}
 	wg.Wait()
 	result <- ""
