@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"sync"
+	"time"
 
 	"golang.org/x/crypto/md4"
 )
@@ -101,6 +102,7 @@ func main() {
 	sOut := flag.String("out", "./a.out", "Onput filename")
 	sSalt := flag.String("salt", "", "Extra salt in hexstring")
 	nChunk := flag.Int("chunk", 2, "Number of chunks, it used to your CPU cores")
+	start := time.Now()
 	flag.Parse()
 	ctx := Computa{}
 	if *sFilename == "" {
@@ -152,4 +154,5 @@ func main() {
 	}
 	wg.Wait()
 	result <- ""
+	log.Printf("Calculation took %f sec", time.Since(start).Seconds())
 }
